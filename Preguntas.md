@@ -233,7 +233,7 @@ Respuesta a pregunta 14: Existen numerosas alternativas dentro de kotlin para po
 15. Explica qué objetos importantes de la librería JDBC usas en el `insert` de esta ampliación y para qué sirve cada uno, por ejemplo `DriverManager`, `Connection` y `PreparedStatement`. Indica también para qué serviría `ResultSet` en una consulta.
 
 Respuesta a pregunta 15:
-
+.
 16. Propón cómo completarías el resto del CRUD sobre la tabla `resumen_procesamiento`, sin implementarlo: consulta de resúmenes, modificación de un registro incorrecto y borrado de un resumen almacenado.
 
 Respuesta a pregunta 16:
