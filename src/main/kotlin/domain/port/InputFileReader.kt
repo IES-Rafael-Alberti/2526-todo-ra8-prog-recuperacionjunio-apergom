@@ -1,7 +1,23 @@
 package org.iesra.domain.port
 
+import org.iesra.domain.model.TripInput
 import java.nio.file.Path
+import kotlin.io.path.readLines
 
-class InputFileReader (inputPath: Path):   {
+class InputFileReader {
+    fun read(inputPath: Path): TripInput {
+        println("leerFicheros")
 
+        val lineas = inputPath.readLines()
+
+        val place = lineas.first()
+
+        val smartphoneFiles = lineas[1].split(" ")
+
+        val reflexFiles = lineas[2].split(" ")
+        // TODO: Validacion //
+
+        return TripInput(place, smartphoneFiles, reflexFiles)
+    }
 }
+
