@@ -18,8 +18,5 @@ class ScriptWriter {
 
         val scriptPath = Paths.get("${place}.sh")
         Files.write(scriptPath, sb.toString().toByteArray())
-
-        val scriptFile = scriptPath.toFile()
-        scriptFile.setExecutable(true)
     }
 }
