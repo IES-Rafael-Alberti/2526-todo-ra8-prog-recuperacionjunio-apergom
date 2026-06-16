@@ -1,6 +1,7 @@
 package org.iesra.app
 
 import org.iesra.domain.port.InputFileReader
+import org.iesra.domain.port.PhotoProcessor
 import java.nio.file.Path
 
 class PhotoRenamerApp {
@@ -15,6 +16,8 @@ class PhotoRenamerApp {
         val trip = InputFileReader().read(inputPath)
         println(trip.toString())
         // Procesar las fotos validas y generar el resultado con comandos y estadisticas.
+        val processor = PhotoProcessor()
+
 
         // Escribir el script <lugar>.sh con los comandos mv generados.
 
