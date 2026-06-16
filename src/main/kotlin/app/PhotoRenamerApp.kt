@@ -6,7 +6,7 @@ class PhotoRenamerApp {
 
     fun run(inputPath: Path) {
         // Leer el fichero de entrada ya validado por ArgumentParser.
-
+        val inputFile = inputPath.toFile()
         // Validar el formato general del fichero y construir el objeto TripInput.
 
         // Procesar las fotos validas y generar el resultado con comandos y estadisticas.
