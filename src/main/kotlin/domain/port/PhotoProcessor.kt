@@ -26,7 +26,23 @@ class PhotoProcessor {
           errors = input.smartphoneFiles.size - smartphonePhotos.size
       )
 
-  }
+      val allValidPhotos = reflexPhotos + smartphonePhotos
+
+      val orderedPhotos = allValidPhotos.sortedBy { it.orderKey }
+
+      val commands = orderedPhotos.mapIndexed { index, photo ->
+          val destFileName = "${input.place}_${String.format("%03d", index)}.jpg"
+          "mv ${photo.originalName} $destFileName"
+      }
+
+        println(commands.joinToString("\n"))
+      return ProcessingResult(
+          commands = commands,
+          reflexStats = reflexStats,
+          smartphoneStats = smartphoneStats,
+          errors = errors.toList()
+      )
+  }}
 
 
     private fun buildValidReflexPhotos(names: List<String>): List<PhotoFile>{
