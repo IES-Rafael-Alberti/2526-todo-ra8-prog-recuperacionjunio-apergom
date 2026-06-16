@@ -6,8 +6,6 @@ import kotlin.io.path.readLines
 
 class InputFileReader {
     fun read(inputPath: Path): TripInput {
-        println("leerFicheros")
-
         val lineas = inputPath.readLines()
 
         val place = lineas.first()
