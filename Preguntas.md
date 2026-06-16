@@ -74,11 +74,159 @@ Respuesta a pregunta 12:
 
 13. Describe el flujo completo de entrada y salida: cómo recibes la ruta por consola, cómo lees el fichero `.in`, qué comprobaciones haces, cómo interpretas sus tres líneas, qué mensajes de resumen o error muestras por consola, cómo generas el fichero `<lugar>.sh` y qué tipos de ficheros usas.
 
-Respuesta a pregunta 13:
+Respuesta a pregunta 13: La ruta es obtenida desde la consola ```bash ./gradlew run --args="examples/italia.in"``` y el ArgumentParser valida que el fichero a leer contenga las especificaciones básicas requeridas (que sea un fichero regular y que exista), las tres líneas del parseador son:
+
+```kotlin
+
+//Toma el argumento
+        val inputPath = Path.of(args[0])
+
+        //El fichero existe?
+        require(Files.exists(inputPath)) {
+            "El fichero de entrada no existe: $inputPath"
+        }
+
+        //Es un fichero regular?
+        require(Files.isRegularFile(inputPath)) {
+            "La ruta indicada no es un fichero: $inputPath"
+        }
+
+```
+
+En la primera linea se le da el valor del fichero que se indica desde la consola mediante una lectura de argumentos de esta que se realiza dentro de la funcion "parse" justo aquí:
+
+```kotlin
+fun parse(args: Array<String>): Path 
+```
+
+Esta función retorna inputPath que es nuestro fichero a interpretar, de esta manera se produce la entrada del fichero que contiene el lugar del viajey las fotos separadas en smartphone y reflex. Con esto obtenido, en la clase InputFileReader tenemos el metodo "read", que como bien dice su nombre lee estos datos y crea unn objeto TripInput con esos datos.
+
+```kotlin 
+class InputFileReader {
+    fun read(inputPath: Path): TripInput {
+        val lineas = inputPath.readLines()
+
+        val place = lineas.first()
+
+        val smartphoneFiles = lineas[1].split(" ")
+
+        val reflexFiles = lineas[2].split(" ")
+
+
+        return TripInput(place, smartphoneFiles, reflexFiles)
+    }
+}
+```
+
+El procesado de los datos se producen dentro de PhotoProcessor que contiene tres metodos, dos de ellos similares que sirven para validar las imagenes (validacion completa no implementada) segun su clave de inicio que es dada gracias a las clases PhotoFile, SmartphonePhotoFile y ReflexPhotoFile. 
+
+La otra funcion es la del procesado que genera un objeto de la clase ProcessingResult con: La lista de comandos que se han generado en base a las fotos válidas, las estadisticas de cada uno de los tipos de fotos y la lista de errores que tienen de formato las imagenes.
+
+````kotlin
+class PhotoProcessor {
+    private val errors: MutableList<String> = mutableListOf()
+  fun process(input: TripInput): ProcessingResult {
+
+      val reflexPhotos = buildValidReflexPhotos(input.reflexFiles)
+      val smartphonePhotos = buildValidSmartphonePhotos(input.smartphoneFiles)
+
+      val reflexStats = PhotoTypeStats(
+          read = input.reflexFiles.size,
+          correct = reflexPhotos.size,
+          errors = input.reflexFiles.size - reflexPhotos.size
+      )
+
+      val smartphoneStats = PhotoTypeStats(
+          read = input.smartphoneFiles.size,
+          correct = smartphonePhotos.size,
+          errors = input.smartphoneFiles.size - smartphonePhotos.size
+      )
+
+      val allValidPhotos = reflexPhotos + smartphonePhotos
+
+      val orderedPhotos = allValidPhotos.sortedBy { it.orderKey }
+
+      val commands = orderedPhotos.mapIndexed { index, photo ->
+          val destFileName = "${input.place}_${String.format("%03d", index)}.jpg"
+          "mv ${photo.originalName} $destFileName"
+      }
+
+        println(commands.joinToString("\n"))
+      return ProcessingResult(
+          commands = commands,
+          reflexStats = reflexStats,
+          smartphoneStats = smartphoneStats,
+          errors = errors.toList()
+      )
+  }}
+
+
+    private fun buildValidReflexPhotos(names: List<String>): List<PhotoFile>{
+        if (names.isEmpty()) return emptyList()
+        val validPhotos = mutableListOf<PhotoFile>()
+
+        for (name in names) {
+            if (name.startsWith("P")) { // TODO: Completar validacion //
+                validPhotos.add(ReflexPhotoFile(name))
+            }
+        }
+        return validPhotos
+    }
+
+    private fun buildValidSmartphonePhotos(names:List<String>): List<PhotoFile> {
+        if (names.isEmpty()) { return emptyList() }
+        val validPhotos = mutableListOf<SmartphonePhotoFile>()
+
+        for (name in names) {
+            if (name.startsWith("IMG")) { // TODO: Completar validacion //
+                validPhotos.add(SmartphonePhotoFile(name))
+            }
+        }
+        return validPhotos
+    }
+
+````
+
+````kotlin
+
+data class ProcessingResult (
+    val commands: List<String>,
+    val reflexStats: PhotoTypeStats,
+    val smartphoneStats: PhotoTypeStats,
+    val errors: List<String>
+)
+
+````
+
+Por último la escritura de datos se realiza a partir de la clase ScriptWriter, que, utilizando StringBuilder() escribe los comandos necesarios para ejecutar en su ficher <lugar>.sh correspondiente.
+
+````kotlin
+class ScriptWriter {
+    fun write(place: String, result: ProcessingResult) {
+
+        val commands = result.commands
+
+        val sb = StringBuilder()
+
+
+        for (command in commands) {
+            sb.append("$command\n")
+        }
+
+        val scriptPath = Paths.get("${place}.sh")
+        Files.write(scriptPath, sb.toString().toByteArray())
+    }
+}
+````
+En cuanto a este apartado, dentro del programa se pedía la existencia de una clase adicional llamada "RenameCommand" que era la que, en teoría llevarí registro de los comandos y se encargaría de escribirlos pero mi decisión de diseño fue implementar esto dentro de el procesado de fotos y utilizar los valores de la clase ProcessingResult como referencia para lo demás.
+
+Otra decisión tomada ha sido que en vez de generar el archivo dentro de la misma carpeta, se genere fuera, es, principalmente, para llevar constancia de ambos archivos, tanto el otorgado por el porfesor como el generado por mí, ya que durante la depuración de la aplicación y el proceso de realización de la misma ha sido más fácil de esta manera. No es "correcto", pero ayuda a comparar el archivo base con el ya manipulado.
+
+Lo último que comentar es el manejo de errores/excepciones que he realizado, es bastante básico y produce ciertos errores dentro del programa como la validacion de algunas imagenes que deberían ser contadas como errores. Ha sido tomada debido a la falta de tiempo por haber empezado el examen tarde y porque quería centrarme en la realización de los puntos claves del criterio.
 
 14. Indica qué alternativas ofrece Kotlin para leer y escribir ficheros. Compara opciones como `File`, `Path`, `readLines`, `bufferedReader`, `writeText` y `bufferedWriter`, y justifica cuál usarías en esta solución.
 
-Respuesta a pregunta 14:
+Respuesta a pregunta 14: Existen numerosas alternativas dentro de kotlin para poder leer o manipular archivos, en mi caso he decidido usar los que he usado como pueden ser el `StringBuilder()`, `readLines`... porque son los que mas he utilizado para preparar el examen y son metodos que he aplicado durante las prácticas, no quiero decir que sean los métodos más óptimos para esto pero son los que a mí me han resultado más faciles de aplicar y entender para este ejercicio.
 
 ## UD9, RA9: Bases de datos relacionales
 

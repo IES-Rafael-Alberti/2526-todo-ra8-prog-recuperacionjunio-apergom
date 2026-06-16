@@ -50,9 +50,10 @@ class PhotoProcessor {
         val validPhotos = mutableListOf<PhotoFile>()
 
         for (name in names) {
-            if (name.startsWith("P")) { // TODO: Completar validacion //
+            if (name.startsWith("P")) {
                 validPhotos.add(ReflexPhotoFile(name))
             }
+            // Falta validacion por regex del formato de imagen
         }
         return validPhotos
     }
@@ -62,9 +63,10 @@ class PhotoProcessor {
         val validPhotos = mutableListOf<SmartphonePhotoFile>()
 
         for (name in names) {
-            if (name.startsWith("IMG")) { // TODO: Completar validacion //
+            if (name.startsWith("IMG")) {
                 validPhotos.add(SmartphonePhotoFile(name))
             }
+            // Falta validacion por regex del formato de la imagen
         }
         return validPhotos
     }
