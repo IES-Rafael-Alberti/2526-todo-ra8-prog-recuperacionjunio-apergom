@@ -6,24 +6,24 @@ import java.nio.file.Path
 class ArgumentParser {
 
     fun parse(args: Array<String>): Path {
-        /*
+
         require(args.size == 1) {
             "Uso: ./gradlew run --args=\"<fichero-entrada.in>\""
         }
 
         //Toma el argumento
-        val inputPath = Path.of()
+        val inputPath = Path.of(args[0])
 
         //El fichero existe?
-        require(Files.) {
+        require(Files.exists(inputPath)) {
             "El fichero de entrada no existe: $inputPath"
         }
 
         //Es un fichero regular?
-        require(Files.)) {
+        require(Files.isRegularFile(inputPath)) {
             "La ruta indicada no es un fichero: $inputPath"
         }
-        */
+
         return inputPath
     }
 }
