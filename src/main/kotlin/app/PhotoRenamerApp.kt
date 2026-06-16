@@ -10,9 +10,10 @@ class PhotoRenamerApp {
 
         val lectorArchivos = InputFileReader()
 
-        val archivos = InputFileReader().read(inputPath)
         // Validar el formato general del fichero y construir el objeto TripInput.
 
+        val trip = InputFileReader().read(inputPath)
+        println(trip.toString())
         // Procesar las fotos validas y generar el resultado con comandos y estadisticas.
 
         // Escribir el script <lugar>.sh con los comandos mv generados.
