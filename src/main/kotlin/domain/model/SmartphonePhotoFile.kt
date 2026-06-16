@@ -1,5 +1,6 @@
 package org.iesra.domain.model
 
-class SmartphonePhotoFile(override val orderKey: String = "IMG", originalName : String ) : PhotoFile(originalName) {
+class SmartphonePhotoFile(originalName : String ) : PhotoFile(originalName) {
+    override val orderKey: String = originalName.split("_").first()
 
 }

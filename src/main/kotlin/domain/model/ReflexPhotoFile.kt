@@ -1,5 +1,7 @@
 package org.iesra.domain.model
 
-class ReflexPhotoFile(override val orderKey: String, originalName: String) : PhotoFile(originalName) {
+class ReflexPhotoFile(originalName: String) : PhotoFile(originalName) {
+
+    override val orderKey: String = originalName.split("").first()
 
 }

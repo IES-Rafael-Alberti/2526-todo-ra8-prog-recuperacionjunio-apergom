@@ -15,7 +15,7 @@ class InputFileReader {
         val smartphoneFiles = lineas[1].split(" ")
 
         val reflexFiles = lineas[2].split(" ")
-        // TODO: Validacion //
+
 
         return TripInput(place, smartphoneFiles, reflexFiles)
     }

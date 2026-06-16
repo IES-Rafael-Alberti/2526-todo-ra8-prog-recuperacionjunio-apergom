@@ -2,6 +2,7 @@ package org.iesra.app
 
 import org.iesra.domain.port.InputFileReader
 import org.iesra.domain.port.PhotoProcessor
+import org.iesra.domain.port.ScriptWriter
 import java.nio.file.Path
 
 class PhotoRenamerApp {
