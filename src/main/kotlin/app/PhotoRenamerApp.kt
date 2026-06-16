@@ -20,7 +20,7 @@ class PhotoRenamerApp {
 
 
         // Escribir el script <lugar>.sh con los comandos mv generados.
-
+        val writer = ScriptWriter()
         // Mostrar por consola el resumen de fotos leidas, correctas y erroneas.
 
         // Si aplica la ampliacion de base de datos, guardar el resumen del procesamiento.
